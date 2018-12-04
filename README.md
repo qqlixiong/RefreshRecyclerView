@@ -87,7 +87,7 @@ mAdapter.addAll(TextImageViewHolder.class, getTextImageVirualData());
 mAdapter.addAll(CardRecordHolder.class, getRecordVirtualData());
 ```
 
-### 设置一个页面既有流线布局也有网格布局（可以加载不同的网格）
+### 设置一个页面既有流线布局也有网格布局（可以加载不同列的网格）
 
 ```
 使用方法：
