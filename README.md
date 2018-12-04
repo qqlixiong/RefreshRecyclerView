@@ -8,13 +8,6 @@
 
 ## 使用方法
 
-- gradle依赖
-
-```
-   compile 'cn.lemon:RefreshRecyclerView:1.4.1'
-   compile 'com.android.support:recyclerview-v7:25.4.0'
-```
-
 - xml布局文件
 
 ```xml
@@ -94,6 +87,30 @@ mAdapter.addAll(TextImageViewHolder.class, getTextImageVirualData());
 mAdapter.addAll(CardRecordHolder.class, getRecordVirtualData());
 ```
 
+### 设置一个页面既有流线布局也有网格布局（可以加载不同的网格）
+
+```
+使用方法：
+setLayoutManager(final GridLayoutManager gridLayoutManager, final IGridLayoutManagerCount iGridLayoutManagerCount)
+设置详解
+/**
+                 * 根据GridLayoutManager的getSpanSize方法可以动态的设置item跨列数
+                 * 需要设置：4个参数的GridLayoutManager
+                 * new GridLayoutManager(getActivity(),6,GridLayoutManager.VERTICAL,false);
+                 * 这里的6（自己设置的最好设置成偶数）就相当于分母，6默认显示一整行（1列），下面的3 和2 就相当于分子，返回3就是（1/2）所以此类型对应的是2列，返回2就是（1/3）所以此类型对应的是3列
+                 * 例如：根据getItemViewType返回的itemtype，第一个position显示为轮播图，所以返回的是gridManager.getSpanCount();（即：6）
+                 * 例如：这里的轮播图类型和head  返回默认的spansize（即是6）
+                 * 如果要显示两列就返回3   3除以6  二分之一
+                 * */
+```
+
+### 设置RecycleView滑动距离
+
+```
+使用方法：
+scrollToPositionWithOffset(int position)
+```
+
 ### CustomMultiTypeAdapter （推荐使用）
 
 > 功能和 MultiTypeAdapter 一样，但避免了反射带来的弊端，需要实现 IViewHolderFactory 接口类来管理viewtype 和 ViewHolder 的映射关系。 
@@ -156,6 +173,34 @@ class CardRecordHolder extends BaseViewHolder<Consumption> {
  }
 }
  ```
+ 
+ ### 设置item的展开和折叠
+
+```
+使用方法：
+1)在viewHolder类中重写bind(int pos)方法
+@Override
+    protected void bind(int pos) {
+        super.bind(pos);
+        if (pos == mAdapter.getOpened()) {
+            //展开
+        } else {
+            //折叠
+        }
+    }
+2）在item的点击事件里处理item的刷新操作：
+if (mAdapter.getOpened() == getLayoutPosition()) {
+                    mAdapter.setOpened(-1);                               
+                    mAdapter.notifyItemChanged(getLayoutPosition());
+                } else {
+                    mAdapter.setObject(object);
+                    int oldOpened = mAdapter.getOpened();
+                    mAdapter.setOpened(getLayoutPosition());
+                    mAdapter.notifyItemChanged(oldOpened);
+                    mAdapter.notifyItemChanged(mAdapter.getOpened());
+                }
+```
+
 
 [详细用法请看Demo](https://github.com/llxdaxia/RecyclerView/tree/master/demo)
 
